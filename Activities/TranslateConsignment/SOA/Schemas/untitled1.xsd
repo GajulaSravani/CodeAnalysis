@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org"
+            targetNamespace="http://www.example.org" elementFormDefault="qualified">
+  <xsd:element name="InvokeInvoiceAvailability_CSMNumber_OutputVariable">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="part">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="CSMNumberOutputCollection">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="CSMNumberOutput" maxOccurs="unbounded">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="CONSIGNMENT_ID" type="xsd:string"/>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string"/>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

@@ -1,0 +1,125 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!--
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  Oracle JDeveloper BPEL Designer 
+  
+  Created: Mon Feb 13 14:09:25 IST 2017
+  Author:  sragajul
+  Type: BPEL 2.0 Process
+  Purpose: Synchronous BPEL Process
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+-->
+<process name="TranslateActivityProcess"
+               targetNamespace="http://xmlns.oracle.com/Activities/TranslateActivity/TranslateActivityProcess"
+               xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+               xmlns:client="http://xmlns.oracle.com/Activities/TranslateActivity/TranslateActivityProcess"
+               xmlns:ora="http://schemas.oracle.com/xpath/extension"
+               xmlns:ui="http://xmlns.oracle.com/soa/designer"
+               xmlns:bpelx="http://schemas.oracle.com/bpel/extension"
+         xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:ns1="http://TargetNamespace.com/nxsdschema" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:ns2="ikea.com/system/xsd/iipcusis/proforma/proformaload/1.0/"
+         xmlns:ns3="http://xmlns.oracle.com/pcbpel/adapter/file/Activities/TranslateActivity/fileReferenceWrite">
+  <import namespace="ikea.com/system/xsd/iipcusis/proforma/proformaload/1.0/" location="../Schemas/Load.xsd"
+          importType="http://www.w3.org/2001/XMLSchema"/>
+  <import namespace="http://TargetNamespace.com/nxsdschema" location="../Schemas/EmployeeDetails.xsd"
+          importType="http://www.w3.org/2001/XMLSchema"/>
+  <import ui:processWSDL="true" namespace="http://xmlns.oracle.com/Activities/TranslateActivity/TranslateActivityProcess" location="../WSDLs/TranslateActivityProcess.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"/>
+    <!-- 
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        PARTNERLINKS                                                      
+        List of services participating in this BPEL process               
+      ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --> 
+  <partnerLinks>
+    <!-- 
+      The 'client' role represents the requester of this service. It is 
+      used for callback. The location and correlation information associated
+      with the client role are automatically set using WS-Addressing.
+    -->
+    <partnerLink name="translateactivityprocess_client" partnerLinkType="client:TranslateActivityProcess" myRole="TranslateActivityProcessProvider"/>
+    <partnerLink name="fileReferenceWrite" partnerLinkType="ns3:Write_plt" partnerRole="Write_role"/>
+  </partnerLinks>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      VARIABLES                                                        
+      List of messages and XML documents used within this BPEL process 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <variables>
+    <!-- Reference to the message passed as input during initiation -->
+    <variable name="inputVariable" messageType="client:TranslateActivityProcessRequestMessage"/>
+
+    <!-- Reference to the message that will be returned to the requester-->
+    <variable name="outputVariable" messageType="client:TranslateActivityProcessResponseMessage"/>
+    <variable name="Translate_Output_Variable1" element="ns1:Employee_Info"/>
+    <variable name="Translate_Output_Variable2" type="xsd:string"/>
+    <variable name="TranslateNativeToXML_OutputVar_1" element="ns1:Employee_Info"/>
+    <variable name="Load" element="ns2:SyncLoad"/>
+    <variable name="LoadCSV" type="xsd:string"/>
+    <variable name="Invoke1_Write_InputVariable" messageType="ns3:Write_msg"/>
+  </variables>
+
+  <!-- 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ORCHESTRATION LOGIC                                               
+     Set of activities coordinating the flow of messages across the    
+     services integrated within this business process                  
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  -->
+  <sequence name="main">
+
+    <!-- Receive input from requestor. (Note: This maps to operation defined in TranslateActivityProcess.wsdl) -->
+    <receive name="receiveInput" partnerLink="translateactivityprocess_client" portType="client:TranslateActivityProcess" operation="process" variable="inputVariable" createInstance="yes"/>
+    <assign name="TranslateNativeToXML">
+      <bpelx:annotation>
+        <bpelx:pattern>translate</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from>ora:doTranslateFromNative(string($inputVariable.payload/client:input), 'Schemas/EmployeeDetails.xsd', 'Employee_Info', 'DOM')</from>
+        <to>$TranslateNativeToXML_OutputVar_1</to>
+      </copy>
+    </assign>
+    <assign name="AssignOutputXML">
+      <copy>
+        <from>$TranslateNativeToXML_OutputVar_1</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Translate_Output_Variable2</to>
+      </copy>
+    </assign>
+    <assign name="TranslateXMLToNative">
+      <bpelx:annotation>
+        <bpelx:pattern>translate</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from>ora:doTranslateToNative($TranslateNativeToXML_OutputVar_1, 'Schemas/EmployeeDetails.xsd', 'Employee_Info', 'STRING')</from>
+        <to>$Translate_Output_Variable2</to>
+      </copy>
+    </assign>
+    <assign name="Translate1">
+      <bpelx:annotation>
+        <bpelx:pattern>translate</bpelx:pattern>
+      </bpelx:annotation>
+      <copy>
+        <from>ora:doTranslateToNative($Load, 'Schemas/Load.xsd', 'SyncLoad', 'STRING')</from>
+        <to>$LoadCSV</to>
+      </copy>
+    </assign>
+    <invoke name="Invoke1" partnerLink="fileReferenceWrite" portType="ns3:Write_ptt"
+            operation="Write" inputVariable="Invoke1_Write_InputVariable" bpelx:invokeAsDetail="no"/>
+    <assign name="Assign1">
+      <copy>
+        <from>$LoadCSV</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$Invoke1_Write_InputVariable.body</to>
+      </copy>
+    </assign>
+    <assign name="AssignOutputNative">
+      <copy>
+        <from>$Translate_Output_Variable2</from>
+        <to expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath1.0">$outputVariable.payload</to>
+      </copy>
+    </assign>
+    <!-- Generate reply to synchronous request -->
+    <reply name="replyOutput" partnerLink="translateactivityprocess_client" portType="client:TranslateActivityProcess" operation="process" variable="outputVariable"/>
+  </sequence>
+</process>

@@ -1,0 +1,199 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="ikea.com/system/xsd/iipcusis/proforma/proformaload/1.0/"
+     targetNamespace="ikea.com/system/xsd/iipcusis/proforma/proformaload/1.0/" elementFormDefault="qualified"
+     xmlns:xdb="http://xmlns.oracle.com/xdb" xmlns:xml="http://www.w3.org/XML/1998/namespace">
+    <xsd:element name="SyncLoad" type="SyncLoadType"/>
+    <xsd:group name="LoadGroup">
+        <xsd:sequence>
+            <xsd:element name="LoadId">
+                <xsd:simpleType>
+                    <xsd:restriction base="nonEmptyStringType">
+                        <xsd:maxLength value="21"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="ReceivingBusinessUnitCode" type="BusinessUnitCodeType" minOccurs="0"/>
+            <xsd:element name="ReceivingBusinessUnitType" type="BusinessUnitTypeType" minOccurs="0"/>
+            <xsd:element name="ReceivingBusinessUnitAddressSeq" type="BusinessUnitAddressSeqType"
+                 minOccurs="0"/>
+            <xsd:element name="BusinessUnitCodeLU" type="BusinessUnitCodeType" minOccurs="1"/>
+            <xsd:element name="BusinessUnitTypeLU" type="BusinessUnitTypeType" minOccurs="1"/>
+            <xsd:element name="AddressSequenceLU" type="BusinessUnitAddressSeqType" minOccurs="1"/>
+            <xsd:element name="DeliveryTerm" minOccurs="1">
+                <xsd:simpleType>
+                    <xsd:restriction base="nonEmptyStringType">
+                        <xsd:maxLength value="3"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="AgreedNamedPlace" minOccurs="1">
+                <xsd:simpleType>
+                    <xsd:restriction base="nonEmptyStringType">
+                        <xsd:maxLength value="35"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:group>
+    <xsd:group name="PackageGroup">
+        <xsd:sequence>
+            <xsd:element name="PackageID">
+                <xsd:simpleType>
+                    <xsd:restriction base="nonEmptyStringType">
+                        <xsd:maxLength value="30"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="ConsignmentNo" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="nonEmptyStringType">
+                        <xsd:maxLength value="12"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:group>
+    <xsd:group name="PackageLineGroup">
+        <xsd:sequence>
+            <xsd:element name="PackageLineId">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:integer">
+                        <xsd:totalDigits value="4"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="ItemNo" type="ItemNoType"/>
+            <xsd:element name="ItemType" type="ItemTypeType"/>
+            <xsd:element name="BusinessUnitCodeSupplier" type="BusinessUnitCodeType"/>
+            <xsd:element name="BusinessUnitTypeSupplier" type="BusinessUnitTypeType"/>
+            <xsd:element name="PackageQuantity" type="QuantityType"/>
+            <xsd:element name="UoMCode" type="UoMCodeType"/>
+            <xsd:element name="TradeStatus">
+                <xsd:simpleType>
+                    <xsd:restriction base="nonEmptyStringType">
+                        <xsd:maxLength value="1"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="CountryOfOrigin">
+                <xsd:simpleType>
+                    <xsd:restriction base="nonEmptyStringType">
+                        <xsd:maxLength value="2"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="DWPNo" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:integer">
+                        <xsd:totalDigits value="6"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="DWPEdition" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:integer">
+                        <xsd:totalDigits value="6"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="DWPValidFrom" type="xsd:date" minOccurs="0"/>
+            <xsd:element name="ConsignmentLineNo" minOccurs="0">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:integer">
+                        <xsd:totalDigits value="4"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:group>
+    <xsd:complexType name="SyncLoadType">
+        <xsd:sequence>
+            <xsd:element name="Load" type="LoadType"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="LoadType">
+        <xsd:sequence>
+            <xsd:group ref="LoadGroup"/>
+            <xsd:element name="PackageList" minOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="Package" maxOccurs="unbounded" type="PackageType"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="PackageType">
+        <xsd:sequence>
+            <xsd:group ref="PackageGroup"/>
+            <xsd:element name="PackageLineList">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="PackageLine" type="PackageLineType" maxOccurs="unbounded"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="PackageLineType">
+        <xsd:sequence>
+            <xsd:group ref="PackageLineGroup" minOccurs="1"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="BusinessUnitCodeType">
+        <xsd:restriction base="nonEmptyStringType">
+            <xsd:maxLength value="5"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="BusinessUnitTypeType">
+        <xsd:restriction base="nonEmptyStringType">
+            <xsd:maxLength value="3"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="UnitClassCodeType">
+        <xsd:restriction base="nonEmptyStringType">
+            <xsd:maxLength value="5"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="UnitClassTypeType">
+        <xsd:restriction base="nonEmptyStringType">
+            <xsd:maxLength value="3"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="BusinessUnitAddressSeqType">
+        <xsd:restriction base="xsd:integer">
+            <xsd:totalDigits value="4"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="QuantityType">
+        <xsd:restriction base="xsd:decimal">
+            <xsd:totalDigits value="11"/>
+            <xsd:fractionDigits value="2"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="UoMCodeType">
+        <xsd:restriction base="nonEmptyStringType">
+            <xsd:maxLength value="10"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="OrderSourceType">
+        <xsd:restriction base="nonEmptyStringType">
+            <xsd:maxLength value="10"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="ItemNoType">
+        <xsd:restriction base="nonEmptyStringType">
+            <xsd:maxLength value="15"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="ItemTypeType">
+        <xsd:restriction base="nonEmptyStringType">
+            <xsd:maxLength value="3"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="nonEmptyStringType">
+        <xsd:restriction base="xsd:string">
+            <xsd:minLength value="1"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

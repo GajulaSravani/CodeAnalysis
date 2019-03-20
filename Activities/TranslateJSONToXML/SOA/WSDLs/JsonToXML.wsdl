@@ -1,0 +1,38 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="JsonToXML"
+     targetNamespace="http://xmlns.oracle.com/Activities/TranslateJSONToXML/JsonToXML"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:client="http://xmlns.oracle.com/Activities/TranslateJSONToXML/JsonToXML"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:ns1="http://TargetNamespace.com/nxsdschema"
+    >
+    <plnk:partnerLinkType name="JsonToXML">
+        <plnk:role name="JsonToXMLProvider" portType="client:JsonToXML"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/Activities/TranslateJSONToXML/JsonToXML"
+             xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns1="http://TargetNamespace.com/nxsdschema">
+            <import namespace="http://xmlns.oracle.com/Activities/TranslateJSONToXML/JsonToXML"
+                 schemaLocation="../Schemas/JsonToXML.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/Activities/TranslateJSONToXML/JsonToXML"
+             xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns1="http://TargetNamespace.com/nxsdschema">
+            <xsd:import namespace="http://TargetNamespace.com/nxsdschema" schemaLocation="../Schemas/jsonXML.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="JsonToXMLRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="JsonToXMLResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="JsonToXML">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:JsonToXMLRequestMessage"/>
+            <wsdl:output message="client:JsonToXMLResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>

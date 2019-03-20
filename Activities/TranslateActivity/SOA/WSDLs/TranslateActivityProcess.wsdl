@@ -1,0 +1,42 @@
+<?xml version= '1.0' encoding= 'UTF-8' ?>
+<wsdl:definitions
+     name="TranslateActivityProcess"
+     targetNamespace="http://xmlns.oracle.com/Activities/TranslateActivity/TranslateActivityProcess"
+     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+     xmlns:client="http://xmlns.oracle.com/Activities/TranslateActivity/TranslateActivityProcess"
+     xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+     xmlns:ns1="http://TargetNamespace.com/nxsdschema"
+     xmlns:ns2="ikea.com/system/xsd/iipcusis/proforma/proformaload/1.0/"
+    >
+    <plnk:partnerLinkType name="TranslateActivityProcess">
+        <plnk:role name="TranslateActivityProcessProvider" portType="client:TranslateActivityProcess"/>
+    </plnk:partnerLinkType>
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/Activities/TranslateActivity/TranslateActivityProcess"
+             xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns1="http://TargetNamespace.com/nxsdschema">
+            <import namespace="http://xmlns.oracle.com/Activities/TranslateActivity/TranslateActivityProcess"
+                 schemaLocation="../Schemas/TranslateActivityProcess.xsd"/>
+        </schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:client="http://xmlns.oracle.com/Activities/TranslateActivity/TranslateActivityProcess"
+             xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:ns1="http://TargetNamespace.com/nxsdschema">
+            <xsd:import namespace="http://TargetNamespace.com/nxsdschema" schemaLocation="../Schemas/EmployeeDetails.xsd"/>
+        </xsd:schema>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            <xsd:import namespace="ikea.com/system/xsd/iipcusis/proforma/proformaload/1.0/" schemaLocation="../Schemas/Load.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="TranslateActivityProcessRequestMessage">
+        <wsdl:part name="payload" element="client:process"/>
+    </wsdl:message>
+    <wsdl:message name="TranslateActivityProcessResponseMessage">
+        <wsdl:part name="payload" element="client:processResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="TranslateActivityProcess">
+        <wsdl:operation name="process">
+            <wsdl:input message="client:TranslateActivityProcessRequestMessage"/>
+            <wsdl:output message="client:TranslateActivityProcessResponseMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+</wsdl:definitions>
